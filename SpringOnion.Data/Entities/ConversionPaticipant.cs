@@ -10,8 +10,7 @@ namespace SpringOnion.Data.Entities
     {
         public string ConversationId { get; set; } = null!;
         public string UserId { get; set; } = null!;
-        public DateTime JoinedAtUtc { get; set; } = DateTime.UtcNow;
-
+        public DateTimeOffset JoinedAtUtc { get; set; } = DateTimeOffset.UtcNow;
         public Conversation Conversation { get; set; } = null!;
     }
 }

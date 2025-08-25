@@ -15,6 +15,7 @@ namespace SpringOnion.Data.Entities
         public long? SizeBytes { get; set; }
         public string? Hash { get; set; }   
         public string? MetadataJson { get; set; }
+        public DateTimeOffset CreatedAtUtc { get; set; } = DateTimeOffset.UtcNow;
 
         public Message Message { get; set; } = null!;
     }

@@ -13,9 +13,9 @@ namespace SpringOnion.Data.Entities
         public string ConversationId { get; set; } = null!;
         public string SenderUserId { get; set; } = null!;
         public long SortId { get; set; } 
-        public DateTime SentAtUtc { get; set; }
-        public DateTime? ReceivedAtUtc { get; set; }
-        public DateTime? ReadAtUtc { get; set; }
+        public DateTimeOffset SentAtUtc { get; set; }
+        public DateTimeOffset? ReceivedAtUtc { get; set; }
+        public DateTimeOffset? ReadAtUtc { get; set; }
         public bool IsDeleted { get; set; }
 
         public string? CipherText { get; set; }  
