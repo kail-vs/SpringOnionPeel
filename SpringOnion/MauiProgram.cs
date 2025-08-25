@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SpringOnion.Data;
+using SpringOnion.Data.Repositories;
 using SpringOnion.Services;
 using SpringOnion.ViewModels;
 using SpringOnion.Views;
@@ -45,6 +46,7 @@ namespace SpringOnion
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<Dashboard>();
+
             builder.UseMauiApp<App>().UseMauiCommunityToolkit();
 
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
@@ -55,6 +57,9 @@ namespace SpringOnion
                 options.EnableDetailedErrors();
 #endif
             });
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddSingleton<UserSyncService>();
 
             return builder.Build();
         }

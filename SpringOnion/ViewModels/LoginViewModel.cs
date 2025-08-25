@@ -12,6 +12,7 @@ namespace SpringOnion.ViewModels
     {
         private readonly AuthenticationService _authService;
         private readonly IDbContextFactory<AppDbContext> _dbFactory;
+        private readonly UserSyncService _userSync;
 
         private string _userId;
         public string UserId
@@ -37,15 +38,14 @@ namespace SpringOnion.ViewModels
         public ICommand LoginCommand { get; }
         public ICommand GoToRegisterCommand { get; }
 
-        public LoginViewModel(AuthenticationService authService, IDbContextFactory<AppDbContext> dbFactory)
+        public LoginViewModel(AuthenticationService authService, IDbContextFactory<AppDbContext> dbFactory, UserSyncService userSync)
         {
             _authService = authService;
             _dbFactory = dbFactory;
+            _userSync = userSync;
             LoginCommand = new Command(async () => await LoginAsync(), () => !IsBusy);
             GoToRegisterCommand = new Command(async () => await GoToRegisterAsync());
         }
-
-
 
         private async Task LoginAsync()
         {
@@ -58,18 +58,20 @@ namespace SpringOnion.ViewModels
 
                 if (success)
                 {
-                    var toast = Toast.Make("Logged In", ToastDuration.Short, 12);
-                    toast.Show();
+                    var toast = Toast.Make(message, ToastDuration.Short, 12);
+                    await toast.Show();
 
                     await using var db = await _dbFactory.CreateDbContextAsync();
                     await db.Database.MigrateAsync();
+
+                    var (ok, syncMsg) = await _userSync.SyncAllUsersAsync();
 
                     Application.Current.MainPage = new AppShellLayer();
                 }
                 else
                 {
-                    var toast = Toast.Make("Error", ToastDuration.Short, 12);
-                    toast.Show();
+                    var toast = Toast.Make(message, ToastDuration.Short, 12);
+                    await toast.Show();
                 }
             }
             finally

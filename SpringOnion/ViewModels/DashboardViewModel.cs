@@ -1,31 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.EntityFrameworkCore;
+using SpringOnion.Data;
+using SpringOnion.Data.Entities;
+using System.Collections.ObjectModel;
 
 namespace SpringOnion.ViewModels
 {
-    public class DashboardViewModel : BaseViewModel
+    public partial class DashboardViewModel : ObservableObject
     {
-        private string _welcomeMessage = "Hello, user!";
-        public string WelcomeMessage
+        private readonly IDbContextFactory<AppDbContext> _dbFactory;
+
+        [ObservableProperty]
+        private ObservableCollection<UserProfile> users = new();
+
+        [ObservableProperty]
+        private string userCountText = "Users in DB: 0";
+
+        public DashboardViewModel(IDbContextFactory<AppDbContext> dbFactory)
         {
-            get => _welcomeMessage;
-            set => SetProperty(ref _welcomeMessage, value);
+            _dbFactory = dbFactory;
+            LoadUsersAsync();
         }
 
-        public ICommand RefreshCommand { get; }
-
-        public DashboardViewModel()
+        private async void LoadUsersAsync()
         {
-            RefreshCommand = new Command(OnRefresh);
-        }
+            await using var db = await _dbFactory.CreateDbContextAsync();
 
-        private void OnRefresh()
-        {
-            WelcomeMessage = "Refreshed at " + DateTime.Now.ToString("T");
+            var list = await db.UserProfiles
+                .AsNoTracking()
+                .OrderBy(u => u.DisplayName ?? u.UserId)
+                .ToListAsync();
+
+            Users = new ObservableCollection<UserProfile>(list);
+            UserCountText = $"Users in DB: {list.Count}";
         }
     }
 }

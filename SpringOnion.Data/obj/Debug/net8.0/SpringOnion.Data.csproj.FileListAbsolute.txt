@@ -26,3 +26,4 @@ C:\Users\Echelon\source\repos\SpringOnionPeel\SpringOnion.Data\obj\Debug\net8.0\
 C:\Users\Echelon\source\repos\SpringOnionPeel\SpringOnion.Data\obj\Debug\net8.0\SpringOnion.Data.pdb
 C:\Users\Echelon\source\repos\SpringOnionPeel\SpringOnion.Data\obj\Debug\net8.0\SpringOnion.Data.genruntimeconfig.cache
 C:\Users\Echelon\source\repos\SpringOnionPeel\SpringOnion.Data\obj\Debug\net8.0\ref\SpringOnion.Data.dll
+C:\Users\Echelon\source\repos\SpringOnionPeel\SpringOnion.Data\obj\Debug\net8.0\SpringOnion.Data.sourcelink.json

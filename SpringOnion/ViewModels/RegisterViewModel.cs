@@ -12,6 +12,7 @@ namespace SpringOnion.ViewModels
     {
         private readonly AuthenticationService _authService;
         private readonly IDbContextFactory<AppDbContext> _dbFactory;
+        private readonly UserSyncService _userSync;
 
         private string _userId;
         public string UserId
@@ -36,10 +37,11 @@ namespace SpringOnion.ViewModels
 
         public ICommand RegisterCommand { get; }
 
-        public RegisterViewModel(AuthenticationService authService, IDbContextFactory<AppDbContext> dbFactory)
+        public RegisterViewModel(AuthenticationService authService, IDbContextFactory<AppDbContext> dbFactory, UserSyncService userSync)
         {
             _authService = authService;
             _dbFactory = dbFactory;
+            _userSync = userSync;
             RegisterCommand = new Command(async () => await RegisterAsync());
         }
 
@@ -62,7 +64,7 @@ namespace SpringOnion.ViewModels
                         await using var db = await _dbFactory.CreateDbContextAsync();
                         await db.Database.MigrateAsync();
 
-                        Application.Current.MainPage = new AppShellLayer();
+                        await Shell.Current.GoToAsync("LoginPage");
                     }
                 }
                 else
