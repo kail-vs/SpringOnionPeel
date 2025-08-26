@@ -5,29 +5,44 @@
              x:Class="SpringOnion.Views.Dashboard"
              NavigationPage.HasNavigationBar="False">
 
-    <ContentPage.Content>
-        <VerticalStackLayout Padding="20" Spacing="15">
+    <VerticalStackLayout Padding="20" Spacing="15">
 
-            <Label Text="Dashboard"
-                   FontSize="24"
-                   HorizontalOptions="Center" />
+        <HorizontalStackLayout Spacing="10">
+            <Button Text="Refresh" 
+                    Command="{Binding RefreshConversationsCommand}" />
+            <Button Text="Send Test Message" 
+                    Command="{Binding CreateTestConversationCommand}" />
+        </HorizontalStackLayout>
 
-            <!-- User count -->
-            <Label Text="{Binding UserCountText}"
-                   FontSize="18"
-                   HorizontalOptions="Center" />
+        <Label Text="Conversations:"
+               FontAttributes="Bold"
+               FontSize="16" />
 
-            <!-- List of users -->
-            <CollectionView ItemsSource="{Binding Users}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Label Text="{Binding DisplayName}" 
-                               FontSize="16"
-                               Padding="5"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+        <CollectionView ItemsSource="{Binding Conversations}"
+                        HeightRequest="250">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10" Margin="5"
+                           BorderColor="LightGray" 
+                           CornerRadius="8">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding ConversationId}" 
+                                   FontAttributes="Bold" 
+                                   FontSize="14"/>
+                            <Label Text="{Binding Type}" FontSize="12" />
+                            <Label Text="{Binding LastActivityUtc}" 
+                                   FontSize="12" 
+                                   TextColor="Gray"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-        </VerticalStackLayout>
-    </ContentPage.Content>
+        <Label Text="{Binding StatusMessage}" 
+               FontSize="14"
+               TextColor="DarkGreen"
+               HorizontalOptions="Center" />
+
+    </VerticalStackLayout>
 </ContentPage>

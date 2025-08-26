@@ -8,6 +8,8 @@ using SpringOnion.Data.Repositories;
 using SpringOnion.Services;
 using SpringOnion.ViewModels;
 using SpringOnion.Views;
+using SpringOnion.Services.Security;
+using SpringOnion.Services.Serialization;
 
 namespace SpringOnion
 {
@@ -46,6 +48,8 @@ namespace SpringOnion
             builder.Services.AddTransient<RegisterPage>();
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<Dashboard>();
+            builder.Services.AddSingleton<CryptoService>();
+            builder.Services.AddSingleton<MessagePacker>();
 
             builder.UseMauiApp<App>().UseMauiCommunityToolkit();
 
@@ -60,6 +64,10 @@ namespace SpringOnion
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddSingleton<UserSyncService>();
+            builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+            builder.Services.AddScoped<MessagingService>();
 
             return builder.Build();
         }

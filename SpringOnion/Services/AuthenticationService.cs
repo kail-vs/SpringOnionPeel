@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace SpringOnion.Services
 {
@@ -16,8 +17,21 @@ namespace SpringOnion.Services
         private const string TokenKey = "auth_token";
 
         public string? Token { get; private set; }
+        public string? UserId { get; private set; }
+        public string? Email { get; private set; }
 
         public string BaseUrl => _baseUrl;
+
+        private void ExtractClaimsFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(token)) return;
+
+            var jwt = handler.ReadJwtToken(token);
+            UserId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+            Email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+        }
 
         public AuthenticationService(IConfiguration configuration)
         {
@@ -67,6 +81,7 @@ namespace SpringOnion.Services
                 {
                     Token = result.Token;
                     await SecureStorage.SetAsync(TokenKey, Token);
+                    ExtractClaimsFromToken(Token);
                     return (true, result.Message);
                 }
 
@@ -79,7 +94,12 @@ namespace SpringOnion.Services
         public async Task<bool> LoadTokenAsync()
         {
             Token = await SecureStorage.GetAsync(TokenKey);
-            return !string.IsNullOrEmpty(Token);
+            if (!string.IsNullOrEmpty(Token))
+            {
+                ExtractClaimsFromToken(Token);
+                return true;
+            }
+            return false;
         }
 
         public async Task<(bool Success, string? Data)> GetProfileAsync()
@@ -95,7 +115,13 @@ namespace SpringOnion.Services
             if (response.IsSuccessStatusCode)
             {
                 var result = await ReadJsonAsync<ApiResponseWithProfile>(response);
-                return (result?.Success ?? false, result?.Data?.UserId ?? "Unknown error");
+                if (result?.Success ?? false)
+                {
+                    UserId = result?.Data?.UserId;
+                    Email = result?.Data?.Email;
+                    return (true, UserId);
+                }
+                return (false, result?.Message ?? "Unknown error");
             }
 
             return (false, "Failed to fetch profile");
