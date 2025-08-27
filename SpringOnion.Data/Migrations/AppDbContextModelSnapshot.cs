@@ -126,6 +126,9 @@ namespace SpringOnion.Data.Migrations
                     b.Property<DateTimeOffset?>("ReceivedAtUtc")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("RemoteId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("SenderUserId")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -135,6 +138,9 @@ namespace SpringOnion.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<long>("SortId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("MessageId");

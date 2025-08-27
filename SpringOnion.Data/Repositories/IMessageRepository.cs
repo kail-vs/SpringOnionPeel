@@ -1,14 +1,36 @@
 ﻿using SpringOnion.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SpringOnion.Data.Repositories;
-
-public interface IMessageRepository
+namespace SpringOnion.Data.Repositories
 {
-    Task<Message> AddLocalOutgoingAsync(string conversationId, string senderUserId, string base64Cipher, string? contentType, CancellationToken ct = default);
-    Task<List<Message>> GetRecentAsync(string conversationId, int take = 50, CancellationToken ct = default);
+    public interface IMessageRepository
+    {
+        Task<Message> AddMessageAsync(
+            string conversationId,
+            string senderUserId,
+            string cipherText,
+            string contentType,
+            CancellationToken ct = default);
+
+        Task<List<Message>> GetMessagesForConversationAsync(
+            string conversationId,
+            int limit = 50,
+            CancellationToken ct = default);
+
+        Task<List<Message>> GetOutgoingPendingAsync(
+            int limit = 50,
+            CancellationToken ct = default);
+
+        Task MarkMessageAsSentAsync(
+            string messageId,
+            string? remoteId = null,
+            CancellationToken ct = default);
+
+        Task MarkMessageAsDeliveredAsync(
+            string messageId,
+            CancellationToken ct = default);
+
+        Task MarkMessageAsFailedAsync(
+            string messageId,
+            CancellationToken ct = default);
+    }
 }

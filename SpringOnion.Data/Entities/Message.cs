@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpringOnion.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
@@ -23,6 +24,8 @@ namespace SpringOnion.Data.Entities
         public string? MetadataJson { get; set; } 
 
         public Conversation Conversation { get; set; } = null!;
+        public MessageStatus Status { get; set; } = MessageStatus.LocalOnly;
+        public string? RemoteId { get; set; }
         public ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
     }
 }

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpringOnion.SignalRServer", "SpringOnion.SignalRServer.csproj", "{430A9BD9-AE7E-49FF-A33B-2FC949B6BF19}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{430A9BD9-AE7E-49FF-A33B-2FC949B6BF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{430A9BD9-AE7E-49FF-A33B-2FC949B6BF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{430A9BD9-AE7E-49FF-A33B-2FC949B6BF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{430A9BD9-AE7E-49FF-A33B-2FC949B6BF19}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2214502-5A6B-41D5-9236-54C4FD70C526}
+	EndGlobalSection
+EndGlobal

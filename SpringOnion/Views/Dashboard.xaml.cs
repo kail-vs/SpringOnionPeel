@@ -8,6 +8,7 @@ namespace SpringOnion.Views
         {
             InitializeComponent();
             BindingContext = vm;
+            _ = vm.InitAsync();
         }
     }
 }

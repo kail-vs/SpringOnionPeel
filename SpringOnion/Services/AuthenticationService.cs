@@ -6,6 +6,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System;
 
 namespace SpringOnion.Services
 {
@@ -28,7 +30,9 @@ namespace SpringOnion.Services
             if (!handler.CanReadToken(token)) return;
 
             var jwt = handler.ReadJwtToken(token);
-            UserId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+            UserId = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
+                     ?? jwt.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
 
             Email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
         }

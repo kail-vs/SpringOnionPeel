@@ -1,17 +1,17 @@
 ﻿using MessagePack;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MessagePack.Resolvers;
 using SpringOnion.Contracts;
 using SpringOnion.Services.Security;
+using System;
 
 namespace SpringOnion.Services.Serialization;
 
 public class MessagePacker
 {
     private readonly CryptoService _crypto;
+
+    private static readonly MessagePackSerializerOptions _options =
+        MessagePackSerializerOptions.Standard.WithResolver(ContractlessStandardResolver.Instance);
 
     public MessagePacker(CryptoService crypto)
     {
@@ -32,7 +32,7 @@ public class MessagePacker
             Meta = plain.Meta
         };
 
-        var msgpack = MessagePackSerializer.Serialize(wire);
+        var msgpack = MessagePackSerializer.Serialize(wire, _options);
         var compressed = CompressionService.GzipCompress(msgpack);
         var sealedBytes = _crypto.EncryptAesGcm(compressed, key);
         return Convert.ToBase64String(sealedBytes);
@@ -46,6 +46,6 @@ public class MessagePacker
         var sealedBytes = Convert.FromBase64String(base64Cipher);
         var compressed = _crypto.DecryptAesGcm(sealedBytes, key);
         var msgpack = CompressionService.GzipDecompress(compressed);
-        return MessagePackSerializer.Deserialize<WireMessage>(msgpack);
+        return MessagePackSerializer.Deserialize<WireMessage>(msgpack, _options);
     }
 }

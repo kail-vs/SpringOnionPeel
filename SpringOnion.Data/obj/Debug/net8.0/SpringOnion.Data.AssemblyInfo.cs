@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SpringOnion.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10b70348e5906acc05c4757b8770a27c19f90c7c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7d29a6faa77f02a9666a641deb12f9b460b82aa")]
 [assembly: System.Reflection.AssemblyProductAttribute("SpringOnion.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SpringOnion.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

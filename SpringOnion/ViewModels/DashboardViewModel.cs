@@ -5,6 +5,7 @@ using SpringOnion.Data;
 using SpringOnion.Data.Entities;
 using SpringOnion.Data.Repositories;
 using SpringOnion.Services;
+using SpringOnion.Contracts;
 
 namespace SpringOnion.ViewModels;
 
@@ -12,6 +13,7 @@ public class DashboardViewModel : BaseViewModel
 {
     private readonly IDbContextFactory<AppDbContext> _dbFactory;
     private readonly AuthenticationService _auth;
+    private readonly MessageSyncService _sync;
 
     public ObservableCollection<Conversation> Conversations { get; } = new();
 
@@ -25,13 +27,35 @@ public class DashboardViewModel : BaseViewModel
         set => SetProperty(ref _statusMessage, value);
     }
 
-    public DashboardViewModel(IDbContextFactory<AppDbContext> dbFactory, AuthenticationService auth)
+    public DashboardViewModel(
+        IDbContextFactory<AppDbContext> dbFactory,
+        AuthenticationService auth,
+        MessageSyncService sync)
     {
         _dbFactory = dbFactory;
         _auth = auth;
+        _sync = sync;
 
         RefreshConversationsCommand = new Command(async () => await LoadConversationsAsync());
         CreateTestConversationCommand = new Command(async () => await CreateTestConversationAsync());
+    }
+
+    /// <summary>
+    /// Called once when the Dashboard page loads.
+    /// Starts sync service (which connects SignalR under the hood).
+    /// </summary>
+    public async Task InitAsync()
+    {
+        try
+        {
+            await _sync.StartAsync();
+            StatusMessage = "Sync service started.";
+            await LoadConversationsAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error starting sync: {ex.Message}";
+        }
     }
 
     private async Task LoadConversationsAsync()
@@ -70,7 +94,6 @@ public class DashboardViewModel : BaseViewModel
                 return;
             }
 
-            // Just pick the first available other user
             var otherUser = await db.UserProfiles
                 .Where(u => u.UserId != myUserId)
                 .FirstOrDefaultAsync();
@@ -81,10 +104,8 @@ public class DashboardViewModel : BaseViewModel
                 return;
             }
 
-            // Ensure a direct conversation
             var convo = await repo.EnsureDirectAsync(myUserId, otherUser.UserId);
 
-            // Add a dummy test message
             var msg = new Message
             {
                 MessageId = Guid.NewGuid().ToString("N"),
@@ -99,7 +120,9 @@ public class DashboardViewModel : BaseViewModel
             db.Messages.Add(msg);
             await db.SaveChangesAsync();
 
-            StatusMessage = $"Test message sent to {otherUser.DisplayName ?? otherUser.UserId}";
+            StatusMessage = $"Test message prepared for {otherUser.DisplayName ?? otherUser.UserId}";
+
+            await _sync.SendMessageAsync(msg);
 
             await LoadConversationsAsync();
         }

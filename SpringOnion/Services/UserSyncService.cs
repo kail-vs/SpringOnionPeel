@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SpringOnion.Data.Entities;
 using SpringOnion.Data.Repositories;
 using System.Net.Http.Headers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SpringOnion.Services
 {
@@ -44,9 +44,9 @@ namespace SpringOnion.Services
                 {
                     UserId = d.UserId,
                     DisplayName = d.DisplayName,
-                    UpdatedAtUtc = d.UpdatedAtUtc,
                     AvatarPath = null,
-                    CreatedAtUtc = DateTime.UtcNow 
+                    UpdatedAtUtc = d.UpdatedAtUtc.UtcDateTime,
+                    CreatedAtUtc = d.UpdatedAtUtc.UtcDateTime
                 });
 
                 await _users.UpsertUsersAsync(mapped, ct);
@@ -71,4 +71,3 @@ namespace SpringOnion.Services
         }
     }
 }
-

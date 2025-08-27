@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SpringOnion.Data.Entities;
+﻿using SpringOnion.Data.Entities;
 
 namespace SpringOnion.Data.Repositories
 {
@@ -14,4 +9,3 @@ namespace SpringOnion.Data.Repositories
         Task<UserProfile?> GetByIdAsync(string userId, CancellationToken ct = default);
     }
 }
-

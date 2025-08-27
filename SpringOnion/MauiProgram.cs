@@ -6,10 +6,11 @@ using Newtonsoft.Json;
 using SpringOnion.Data;
 using SpringOnion.Data.Repositories;
 using SpringOnion.Services;
-using SpringOnion.ViewModels;
-using SpringOnion.Views;
+using SpringOnion.Services.Realtime;
 using SpringOnion.Services.Security;
 using SpringOnion.Services.Serialization;
+using SpringOnion.ViewModels;
+using SpringOnion.Views;
 
 namespace SpringOnion
 {
@@ -50,6 +51,8 @@ namespace SpringOnion
             builder.Services.AddTransient<Dashboard>();
             builder.Services.AddSingleton<CryptoService>();
             builder.Services.AddSingleton<MessagePacker>();
+            builder.Services.AddSingleton<SignalRClientService>();
+
 
             builder.UseMauiApp<App>().UseMauiCommunityToolkit();
 
@@ -68,6 +71,35 @@ namespace SpringOnion
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
             builder.Services.AddScoped<MessagingService>();
+
+            builder.Services.AddDbContextFactory<AppDbContext>(options =>
+                options.UseSqlite($"Filename={Path.Combine(FileSystem.AppDataDirectory, "app.db")}"));
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<IAttachmentRepository, AttachmentRepository>();
+            builder.Services.AddScoped<IConversationParticipantRepository, ConversationParticipantRepository>();
+
+            var appSecret = builder.Configuration["AppSecret"] ?? "hvjYFI3743yvJ'[/;lra3q3uIHV3rb4njo99h4tdsgg4";
+            var hubUrl = builder.Configuration["SignalRHubUrl"];
+
+            builder.Services.AddSingleton(sp =>
+            {
+                var auth = sp.GetRequiredService<AuthenticationService>();
+                return new SignalRRelayClient(auth, hubUrl!);
+            });
+
+            builder.Services.AddSingleton(sp =>
+                new MessageSyncService(
+                    sp.GetRequiredService<SignalRRelayClient>(),
+                    sp.GetRequiredService<IMessageRepository>(),
+                    sp.GetRequiredService<IConversationRepository>(),
+                    sp.GetRequiredService<AuthenticationService>(),
+                    sp.GetRequiredService<MessagePacker>(),
+                    appSecret
+                ));
+
 
             return builder.Build();
         }

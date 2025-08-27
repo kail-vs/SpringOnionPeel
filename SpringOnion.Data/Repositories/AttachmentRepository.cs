@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpringOnion.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpringOnion.Data.Repositories
 {
@@ -12,22 +7,15 @@ namespace SpringOnion.Data.Repositories
     {
         private readonly AppDbContext _db;
 
-        public AttachmentRepository(AppDbContext db)
-        {
-            _db = db;
-        }
+        public AttachmentRepository(AppDbContext db) => _db = db;
 
         public async Task<Attachment?> GetByIdAsync(string id, CancellationToken ct = default)
-        {
-            return await _db.Attachments.FirstOrDefaultAsync(a => a.AttachmentId == id, ct);
-        }
+            => await _db.Attachments.FirstOrDefaultAsync(a => a.AttachmentId == id, ct);
 
         public async Task<List<Attachment>> GetByMessageAsync(string messageId, CancellationToken ct = default)
-        {
-            return await _db.Attachments
-                .Where(a => a.MessageId == messageId)
-                .ToListAsync(ct);
-        }
+            => await _db.Attachments
+                        .Where(a => a.MessageId == messageId)
+                        .ToListAsync(ct);
 
         public async Task AddAsync(Attachment attachment, CancellationToken ct = default)
         {

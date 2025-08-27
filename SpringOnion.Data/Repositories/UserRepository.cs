@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpringOnion.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpringOnion.Data.Repositories
 {
@@ -12,23 +7,16 @@ namespace SpringOnion.Data.Repositories
     {
         private readonly AppDbContext _db;
 
-        public UserRepository(AppDbContext db)
-        {
-            _db = db;
-        }
+        public UserRepository(AppDbContext db) => _db = db;
 
         public async Task<List<UserProfile>> GetAllAsync(CancellationToken ct = default)
-        {
-            return await _db.UserProfiles
-                .AsNoTracking()
-                .OrderBy(u => u.DisplayName ?? u.UserId)
-                .ToListAsync(ct);
-        }
+            => await _db.UserProfiles
+                        .AsNoTracking()
+                        .OrderBy(u => u.DisplayName ?? u.UserId)
+                        .ToListAsync(ct);
 
         public async Task<UserProfile?> GetByIdAsync(string userId, CancellationToken ct = default)
-        {
-            return await _db.UserProfiles.FindAsync(new object?[] { userId }, ct);
-        }
+            => await _db.UserProfiles.FindAsync(new object?[] { userId }, ct);
 
         public async Task UpsertUsersAsync(IEnumerable<UserProfile> users, CancellationToken ct = default)
         {
@@ -36,8 +24,8 @@ namespace SpringOnion.Data.Repositories
             var ids = incoming.Select(u => u.UserId).ToList();
 
             var existing = await _db.UserProfiles
-                .Where(u => ids.Contains(u.UserId))
-                .ToDictionaryAsync(u => u.UserId, ct);
+                                    .Where(u => ids.Contains(u.UserId))
+                                    .ToDictionaryAsync(u => u.UserId, ct);
 
             foreach (var u in incoming)
             {
@@ -58,4 +46,3 @@ namespace SpringOnion.Data.Repositories
         }
     }
 }
-
